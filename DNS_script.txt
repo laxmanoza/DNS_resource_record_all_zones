@@ -1,0 +1,45 @@
++++++++++++++++++++++++
+Enable - Allow transfer to any zone - This needs to be run from D30 server
+++++++++++++++++++++++++
+
+$list=Get-Content -Path "D:\Laxman\List.txt"
+
+foreach ($list1 in $list)
+{
+Set-DnsServerPrimaryZone -Name $list1 -SecureSecondaries TransferAnyServer 
+
+}
+
+
+
+
+E:\Laxman\Scripts\DNSmigration
+
+#$DNS=SRv4
+#$DNSFQDN=SRV4.Xd02.intra
+
+
+#Getting all the zone from file
+$List=Get-Content -Path E:\Laxman\Scripts\DNSmigration\IN.txt
+
+#Creating Secondary Zone
+foreach ($list1 in $list)
+{
+Add-DnsServerSecondaryZone -Name "$list1" -ZoneFile "$list1.dns" -MasterServers 10.13.32.74
+
+# converting the secondary zone to primary
+
+ConvertTo-DnsServerPrimaryZone -Name "$list1" -PassThru -Verbose -ZoneFile "$list1" -Force 
+
+#changing to AD integerated
+
+ConvertTo-DnsServerPrimaryZone "Test1.intra" -PassThru -Verbose -ReplicationScope forest -Force
+
+
+
+
+ 
+
+
+}
+
